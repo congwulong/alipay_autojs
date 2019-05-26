@@ -1,4 +1,4 @@
-# alipay_autojs
+# alipay_autojs 最简单的蚂蚁森林自动收能量脚本 
 支付宝蚂蚁森林自动收取能量，蚂蚁庄园自动喂鸡，支持MIUI
 
 1. 不需要额外的工具，不需要root，只要一个软件auto.js
@@ -9,4 +9,5 @@ auto.js是一个支持无障碍服务的Android平台上的JavaScript IDE。通�
 
 参考：
 https://github.com/hyb1996/Auto.js
+
 https://blog.csdn.net/xiaobaicai666/article/details/84334408
