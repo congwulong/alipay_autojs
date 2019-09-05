@@ -1,9 +1,29 @@
 var morningTime="07:18";//自己运动能量生成时间
 var startTime="07:00";
-var endTime="7:50";
+var endTime="7:40";
 unlock();
 sleep(2000);
 mainEntrence();
+
+//蚂蚁会员积分
+function get_alipay_points(){
+	clickByTextDesc("我的",0);
+	sleep(2000);
+	clickByTextDesc("支付宝会员",0);
+	sleep(8000);
+	clickByTextDesc("领积分",0);
+	sleep(2000);
+	var i=0;
+	for(i=0; i<10;i++){
+		clickByTextDesc("点击领取",0);
+		sleep(100);
+	}
+back();
+sleep(1000);
+back();
+sleep(1000);
+	clickByTextDesc("首页",0);
+}
 
 //
 function exit_till_error(){
@@ -123,7 +143,7 @@ function enterMyMainPage(){
 	}
 	toastLog("第"+i+"次尝试进入自己主页");
 	if(i>=10){
-		toastLog("进入自己能量主页失败,脚本退出");
+		toastLog("进入自己能量主页失败");
 		return false;
 		//exit_till_error();
 	}
@@ -155,7 +175,7 @@ function enterRank(){
     }
     toastLog("第"+i+"次尝试进入好友排行榜");
     if(i>=10){
-        toastLog("进入好友排行榜失败,脚本退出");
+        toastLog("进入好友排行榜失败");
 		return false;
         //exit_till_error();
     }
@@ -231,7 +251,7 @@ function enterOthers(){
 	}
 	toastLog("第"+i+"次尝试进入好友主页");
 	if(i>=10){
-		toastLog("进入好友能量主页失败,脚本退出");
+		toastLog("进入好友能量主页失败");
 		return false;
 		//exit_till_error();
 	}
@@ -247,7 +267,7 @@ function enterOthers(){
 		j++;
 	}
 	if(j>=10){
-		toastLog("返回排行榜失败,脚本退出");
+		toastLog("返回排行榜失败");
 		return false;
 		//exit_till_error();
 	}
@@ -389,7 +409,9 @@ function openAlipay(){
     }
 	toastLog("第"+i+"次尝试进入支付宝主页");
     if(i>=5){
-        toastLog("没有找到支付宝首页，程序退出");
+        toastLog("没有找到支付宝首页");
+        sleep(1000);
+	clickByTextDesc("首页",0);
 		return false;
         //exit_till_error();
     }
@@ -419,5 +441,6 @@ function mainEntrence(){
 		whenComplete();
     }while(checkTime());
     
+	get_alipay_points();
     exit();
 }
