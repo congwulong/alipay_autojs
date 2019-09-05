@@ -1,10 +1,36 @@
 var morningTime="07:18";//自己运动能量生成时间
 var startTime="07:00";
-var endTime="08:50";
+var endTime="7:50";
 unlock();
 sleep(2000);
 mainEntrence();
- 
+
+//
+function exit_till_error(){
+    clickByTextDesc("关闭",0);
+    sleep(5000);
+    clickByTextDesc("关闭",0);
+    sleep(5000);
+    do{
+		//打开支付宝
+		openAlipay();
+		//蚂蚁庄园
+		if(!checkTime()){
+				enterAntFarm();
+		   }
+		//进入蚂蚁森林主页,收集自己的能量
+		enterMyMainPage();
+		//进入排行榜
+		enterRank();
+		//进入好友主页，收好友能量
+		enterOthers();
+		//结束后返回主页面
+		whenComplete();
+    }while(checkTime());
+    
+    exit();
+}
+
 //解锁
 function unlock(){
     if(!device.isScreenOn()){
@@ -35,25 +61,27 @@ function unlock(){
  */
 function prepareThings(){
     setScreenMetrics(1080, 2340);
+    //toastLog("test1");
     //请求截图
    if(!requestScreenCapture()){
         toastLog("请求截图失败,脚本退出");
         exit();
     }
+    sleep(3000);
+    //toastLog("test2");
     
 }
 /**
  * 设置按键监听 当脚本执行时候按音量减 退出脚本
  */
 function registEvent() {
-    //启用按键监听
     events.observeKey();
-    //监听音量上键按下
-    events.onKeyDown("KEYCODE_VOLUME_DOWN", function(event){
-        toastLog("脚本手动退出");
+    events.onKeyDown("volume_down", function(event){
+        toast("程序结束");
         exit();
     });
 }
+
 /**
  * 获取截图
  */
@@ -84,7 +112,7 @@ function enterMyMainPage(){
         sleep(1000);
         i++;   
     }  
-    clickByTextDesc("蚂蚁森林",0,true,"请把蚂蚁森林入口添加到主页,脚本退出");
+    clickByTextDesc("蚂蚁森林",0);
 	
     //等待进入自己的主页,10次尝试
     sleep(3000);
@@ -96,18 +124,15 @@ function enterMyMainPage(){
 	toastLog("第"+i+"次尝试进入自己主页");
 	if(i>=10){
 		toastLog("进入自己能量主页失败,脚本退出");
-		exit();
+		return false;
+		//exit_till_error();
 	}
 	
 	//收自己能量
-    //将能量球存在的区域都点一遍，间隔是能量球的半径
-    for(var row = 640;row < 900;row+=100)
-           for(var col = 140;col < 800;col+=100){
-               click(col,row);
-               sleep(50);
-               }
+    clickByTextDesc("克",0);
     toastLog("自己能量收集完成");
     sleep(100);
+	return true;
 }
 /**
  * 进入排行榜
@@ -120,18 +145,21 @@ function enterRank(){
     swipe(520,1800,520,300,500);
     toastLog("查看更多好友");
     sleep(500);
-    clickByTextDesc("查看更多好友",0,true,"程序未找到排行榜入口,脚本退出");
+    clickByTextDesc("查看更多好友",0);
 	
 	//等待排行榜主页出现
     var i=0; 
-    while (!textEndsWith("好友排行榜").exists() && !descEndsWith("好友排行榜").exists() && i<=5){
+    while (!textEndsWith("好友排行榜").exists() && !descEndsWith("好友排行榜").exists() && i<=10){
         sleep(1000);
         i++;
     }
-    if(i>=5){
+    toastLog("第"+i+"次尝试进入好友排行榜");
+    if(i>=10){
         toastLog("进入好友排行榜失败,脚本退出");
-        exit();
+		return false;
+        //exit_till_error();
     }
+	return true;
 }
 /**
  * 从排行榜获取可收集好友的点击位置
@@ -142,7 +170,7 @@ function  getHasEnergyfriend(type) {
     //var img = images.read("/storage/emulated/0/DCIM/Screenshots/1.png");
     var p=null;
     if(type==1){
-		// 区分倒计时和可收取能量的小手
+    	// 区分倒计时和可收取能量的小手
         p = images.findMultiColors(img, "#ffffff",[[0, -35, "#1da06d"],[0, 23, "#1da06d"]], {
             region: [1074,200 , 1, 2000]
         });
@@ -151,7 +179,7 @@ function  getHasEnergyfriend(type) {
         toastLog("找到好友");
         return p;
     }else {
-        toastLog("此页没有找到可收能量的好友");
+        //toastLog("此页没有找到可收能量的好友");
         return null;
     }
 }
@@ -176,18 +204,18 @@ function enterOthers(){
 			sleep(100);
 			ePoint=getHasEnergyfriend(1);
 			i++;
-			
+		
 			//如果检测到结尾，同时也没有可收能量的好友，那么结束收取
 			if(textEndsWith("没有更多了").exists() || descEndsWith("没有更多了").exists()){
 				if(ePoint == null){
-					return false;
+					return true;
 				}
 			}
-		
+	
 			//如果连续32次都未检测到可收集好友,无论如何停止查找(由于程序控制了在排行榜界面,且判断了结束标记,基本已经不存在这种情况了)
 			if(i>32){
 				toastLog("程序可能出错,连续"+i+"次未检测到可收集好友");
-				exit();
+			return false;
 			}
 		}
     }
@@ -195,7 +223,7 @@ function enterOthers(){
 	//找到好友
 	//进入好友页面,10次尝试
 	click(ePoint.x,ePoint.y+20);
-sleep(3000);
+	sleep(3000);
 	var i=0;
 	while (!textEndsWith("浇水").exists() && !descEndsWith("浇水").exists() && i<=10){
 		sleep(1000);
@@ -204,16 +232,13 @@ sleep(3000);
 	toastLog("第"+i+"次尝试进入好友主页");
 	if(i>=10){
 		toastLog("进入好友能量主页失败,脚本退出");
-		exit();
+		return false;
+		//exit_till_error();
 	}
 	
 	//收能量
-	for(var row = 560;row < 900;row+=100)
-	   for(var col = 170;col < 900;col+=100){
-		   click(col,row);
-		   sleep(50);
-		}
-	
+	clickByTextDesc("克",0);
+
 	//等待返回好友排行榜
 	back();
 	var j=0;
@@ -223,37 +248,63 @@ sleep(3000);
 	}
 	if(j>=10){
 		toastLog("返回排行榜失败,脚本退出");
-		exit();
+		return false;
+		//exit_till_error();
 	}
-	
+	//registEvent();
 	//返回排行榜成功，继续
 	enterOthers();
 
 }
 
-function clickByTextDesc(energyType,paddingY,noFindExit,exceptionMsg){
+
+function clickByTextDesc(energyType,paddingY){
+    var clicked = false;
     if(descEndsWith(energyType).exists()){
         descEndsWith(energyType).find().forEach(function(pos){
             var posb=pos.bounds();
-            click(posb.centerX(),posb.centerY()-paddingY);
-            //sleep(200);
+            if(posb.centerX()<0 || posb.centerY()-paddingY<0){
+                return false;
+            }
+            //toastLog(pos.id());
+            var str = pos.id();
+            if(str != null){
+                if(str.search("search_button") == -1){
+                    click(posb.centerX(),posb.centerY()-paddingY);
+                     //toastLog("get it 1");
+                     clicked = true;   
+                }
+            }else{
+                click(posb.centerX(),posb.centerY()-paddingY);
+                clicked = true;
+            }
+            sleep(100);
         });
-    }else if(textEndsWith(energyType).exists()){
+    }
+    
+    if(textEndsWith(energyType).exists() && clicked == false){
         textEndsWith(energyType).find().forEach(function(pos){
             var posb=pos.bounds();
-            click(posb.centerX(),posb.centerY()-paddingY);
-        });
-    }else{
-        if(noFindExit!=null && noFindExit){
-            if(exceptionMsg !=null){
-                toastLog(exceptionMsg);
-                exit();
-            }else{
-                toastLog("程序当前所处状态不合预期,脚本退出");
-				exit();
+            if(posb.centerX()<0 || posb.centerY()-paddingY<0){
+                return false;
             }
-        }
+            //toastLog(pos.id());
+            var str = pos.id();
+            if(str != null){
+                if(str.search("search_button") == -1){
+                    click(posb.centerX(),posb.centerY()-paddingY); 
+                    //toastLog("get it 2"); 
+                    clicked = true;  
+                }
+            }else{
+                click(posb.centerX(),posb.centerY()-paddingY);
+                clicked = true;
+            }
+            sleep(100);
+        });
     }
+    
+    return clicked;
 }
 
 /**
@@ -264,7 +315,6 @@ function whenComplete() {
     back();
     sleep(1500);
     back();
-    //exit();
 }
 
 function checkTime(){
@@ -306,19 +356,24 @@ function enterAntFarm(){
         sleep(1000);
         i++;   
     }
-    clickByTextDesc("蚂蚁庄园",0,true,"请把蚂蚁庄园入口添加到主页我的应用"); 
-    sleep(7000);
-   //captureScreen("/storage/emulated/0/DCIM/Screenshots/2_1.png");
-   //exit();
-   click(931,2150);
-   sleep(2000);
-   click(340,1420);
-   sleep(1000);
-   click(340,1900);sleep(1000);click(230,1600);sleep(1000);
-   click(930,1900);sleep(1000);click(670,1600);sleep(1000);
-   //captureScreen("/storage/emulated/0/DCIM/Screenshots/2_2.png");
-   back();
-   sleep(2000);
+	if(i>=5){
+		return false;
+	}
+		
+    clickByTextDesc("蚂蚁庄园",0);
+	sleep(7000);
+    //captureScreen("/storage/emulated/0/DCIM/Screenshots/2_1.png");
+    //exit();
+    click(931,2150);
+    sleep(2000);
+    click(340,1420);
+    sleep(1000);
+    click(340,1900);sleep(1000);click(230,1600);sleep(1000);
+    click(930,1900);sleep(1000);click(670,1600);sleep(1000);
+    //captureScreen("/storage/emulated/0/DCIM/Screenshots/2_2.png");
+    back();
+    sleep(2000);
+    return true;
 }
 
 function openAlipay(){
@@ -335,8 +390,10 @@ function openAlipay(){
 	toastLog("第"+i+"次尝试进入支付宝主页");
     if(i>=5){
         toastLog("没有找到支付宝首页，程序退出");
-        exit();
+		return false;
+        //exit_till_error();
     }
+	return true;
 }
     
 //程序主入口
@@ -344,7 +401,7 @@ function mainEntrence(){
     //前置操作
     prepareThings();
     //注册音量下按下退出脚本监听
-    registEvent();
+    //registEvent();
     do{
 		//打开支付宝
 		openAlipay();
@@ -355,9 +412,9 @@ function mainEntrence(){
 		//进入蚂蚁森林主页,收集自己的能量
 		enterMyMainPage();
 		//进入排行榜
-		enterRank();
+	if(	enterRank())
 		//进入好友主页，收好友能量
-		enterOthers();
+	{	enterOthers();}
 		//结束后返回主页面
 		whenComplete();
     }while(checkTime());
