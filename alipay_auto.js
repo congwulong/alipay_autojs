@@ -289,13 +289,14 @@ function clickByTextDesc(energyType,paddingY){
             //toastLog(pos.id());
             var str = pos.id();
             if(str != null){
-                if(str.search("search_button") == -1){
+                if(str.search("search") == -1){
                     click(posb.centerX(),posb.centerY()-paddingY);
                      //toastLog("get it 1");
                      clicked = true;   
                 }
             }else{
                 click(posb.centerX(),posb.centerY()-paddingY);
+                //toastLog("get it 2");
                 clicked = true;
             }
             sleep(100);
@@ -311,13 +312,14 @@ function clickByTextDesc(energyType,paddingY){
             //toastLog(pos.id());
             var str = pos.id();
             if(str != null){
-                if(str.search("search_button") == -1){
+                if(str.search("search") == -1){
                     click(posb.centerX(),posb.centerY()-paddingY); 
-                    //toastLog("get it 2"); 
+                    //toastLog("get it 3"); 
                     clicked = true;  
                 }
             }else{
                 click(posb.centerX(),posb.centerY()-paddingY);
+                //toastLog("get it 4");
                 clicked = true;
             }
             sleep(100);
