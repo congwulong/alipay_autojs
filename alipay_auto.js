@@ -137,7 +137,7 @@ function enterMyMainPage(){
     //等待进入自己的主页,10次尝试
     sleep(3000);
     i=0;
-	while (!textEndsWith("地图").exists() && !descEndsWith("地图").exists() && i<=10){
+	while (!textEndsWith("背包").exists() && !descEndsWith("地图").exists() && i<=10){
 		sleep(1000);
 		i++;
 	}
@@ -169,7 +169,7 @@ function enterRank(){
 	
 	//等待排行榜主页出现
     var i=0; 
-    while (!textEndsWith("好友排行榜").exists() && !descEndsWith("好友排行榜").exists() && i<=10){
+    while (!textEndsWith("周排行榜").exists() && !descEndsWith("周排行榜").exists() && i<=10){
         sleep(1000);
         i++;
     }
@@ -192,7 +192,7 @@ function  getHasEnergyfriend(type) {
     if(type==1){
     	// 区分倒计时和可收取能量的小手
         p = images.findMultiColors(img, "#ffffff",[[0, -35, "#1da06d"],[0, 23, "#1da06d"]], {
-            region: [1074,200 , 1, 2000]
+            region: [1073,200 , 1, 2000]
         });
     }
     if(p!=null){
@@ -219,7 +219,7 @@ function enterOthers(){
         if(myEnergyTime()){
             return false;
         }
-		if(textEndsWith("好友排行榜").exists() || descEndsWith("好友排行榜").exists()){
+		if(textEndsWith("周排行榜").exists() || descEndsWith("周排行榜").exists()){
 			swipe(520,1800,520,300,500);
 			sleep(100);
 			ePoint=getHasEnergyfriend(1);
@@ -262,7 +262,7 @@ function enterOthers(){
 	//等待返回好友排行榜
 	back();
 	var j=0;
-	if(!textEndsWith("好友排行榜").exists() && !descEndsWith("好友排行榜").exists() && j<=10){
+	if(!textEndsWith("周排行榜").exists() && !descEndsWith("周排行榜").exists() && j<=10){
 		sleep(1000);
 		j++;
 	}
