@@ -1,6 +1,6 @@
 var morningTime="07:18";//自己运动能量生成时间
 var startTime="07:00";
-var endTime="7:40";
+var endTime="8:40";
 unlock();
 sleep(2000);
 mainEntrence();
@@ -18,10 +18,10 @@ function get_alipay_points(){
 		clickByTextDesc("点击领取",0);
 		sleep(100);
 	}
-back();
-sleep(1000);
-back();
-sleep(1000);
+	back();
+	sleep(1000);
+	back();
+	sleep(1000);
 	clickByTextDesc("首页",0);
 }
 
@@ -166,19 +166,9 @@ function enterRank(){
     toastLog("查看更多好友");
     sleep(500);
     clickByTextDesc("查看更多好友",0);
-	
-	//等待排行榜主页出现
-    var i=0; 
-    while (!textEndsWith("周排行榜").exists() && !descEndsWith("周排行榜").exists() && i<=10){
-        sleep(1000);
-        i++;
-    }
-    toastLog("第"+i+"次尝试进入好友排行榜");
-    if(i>=10){
-        toastLog("进入好友排行榜失败");
-		return false;
-        //exit_till_error();
-    }
+	   
+	 //等待排行榜主页出现
+   sleep(3000);
 	return true;
 }
 /**
@@ -187,7 +177,7 @@ function enterRank(){
 function  getHasEnergyfriend(type) {
     var img = getCaptureImg();
     //getCaptureImg();
-    //var img = images.read("/storage/emulated/0/DCIM/Screenshots/1.png");
+    //var img = images.read("/storage/emulated/0/DCIM/Screenshots/2.png");
     var p=null;
     if(type==1){
     	// 区分倒计时和可收取能量的小手
@@ -219,24 +209,16 @@ function enterOthers(){
         if(myEnergyTime()){
             return false;
         }
-		if(textEndsWith("周排行榜").exists() || descEndsWith("周排行榜").exists()){
-			swipe(520,1800,520,300,500);
-			sleep(100);
-			ePoint=getHasEnergyfriend(1);
-			i++;
-		
-			//如果检测到结尾，同时也没有可收能量的好友，那么结束收取
-			if(textEndsWith("没有更多了").exists() || descEndsWith("没有更多了").exists()){
-				if(ePoint == null){
-					return true;
-				}
-			}
-	
-			//如果连续32次都未检测到可收集好友,无论如何停止查找(由于程序控制了在排行榜界面,且判断了结束标记,基本已经不存在这种情况了)
-			if(i>32){
-				toastLog("程序可能出错,连续"+i+"次未检测到可收集好友");
-			return false;
-			}
+		swipe(520,1800,520,300,500);
+		sleep(100);
+		ePoint=getHasEnergyfriend(1);
+		i++;
+
+
+		//如果连续32次都未检测到可收集好友,无论如何停止查找(由于程序控制了在排行榜界面,且判断了结束标记,基本已经不存在这种情况了)
+		if(i>32){
+			toastLog("程序可能出错,连续"+i+"次未检测到可收集好友");
+		return false;
 		}
     }
     
@@ -261,17 +243,7 @@ function enterOthers(){
 
 	//等待返回好友排行榜
 	back();
-	var j=0;
-	if(!textEndsWith("周排行榜").exists() && !descEndsWith("周排行榜").exists() && j<=10){
-		sleep(1000);
-		j++;
-	}
-	if(j>=10){
-		toastLog("返回排行榜失败");
-		return false;
-		//exit_till_error();
-	}
-	//registEvent();
+
 	//返回排行榜成功，继续
 	enterOthers();
 
