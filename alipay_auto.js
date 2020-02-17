@@ -3,7 +3,46 @@ var startTime="07:00";
 var endTime="8:40";
 unlock();
 sleep(2000);
+
+threads.start(function(){
+    //在子线程中调用observeKey()从而使按键事件处理在子线程执行
+    events.observeKey();
+    events.on("key_down", function(keyCode, events){
+        //音量键关闭脚本
+        if(keyCode == keys.volume_down){
+            toast("您选择退出脚本！")
+            sleep(2000);
+            exit();
+        }
+    });
+});
+
 mainEntrence();
+
+//程序主入口
+function mainEntrence(){
+    //前置操作
+    prepareThings();
+    do{
+		//打开支付宝
+		openAlipay();
+		//蚂蚁庄园
+		if(!checkTime()){
+			//enterAntFarm();
+		 }
+		//进入蚂蚁森林主页,收集自己的能量
+		enterMyMainPage();
+		//进入排行榜
+	if(	enterRank())
+		//进入好友主页，收好友能量
+	{	enterOthers();}
+		//结束后返回主页面
+		whenComplete();
+    }while(checkTime());
+    
+	get_alipay_points();
+    exit();
+}
 
 //蚂蚁会员积分
 function get_alipay_points(){
@@ -91,16 +130,7 @@ function prepareThings(){
     //toastLog("test2");
     
 }
-/**
- * 设置按键监听 当脚本执行时候按音量减 退出脚本
- */
-function registEvent() {
-    events.observeKey();
-    events.onKeyDown("volume_down", function(event){
-        toast("程序结束");
-        exit();
-    });
-}
+
 
 /**
  * 获取截图
@@ -392,29 +422,4 @@ function openAlipay(){
 	return true;
 }
     
-//程序主入口
-function mainEntrence(){
-    //前置操作
-    prepareThings();
-    //注册音量下按下退出脚本监听
-    //registEvent();
-    do{
-		//打开支付宝
-		openAlipay();
-		//蚂蚁庄园
-		if(!checkTime()){
-			enterAntFarm();
-		 }
-		//进入蚂蚁森林主页,收集自己的能量
-		enterMyMainPage();
-		//进入排行榜
-	if(	enterRank())
-		//进入好友主页，收好友能量
-	{	enterOthers();}
-		//结束后返回主页面
-		whenComplete();
-    }while(checkTime());
-    
-	get_alipay_points();
-    exit();
-}
+
