@@ -1,6 +1,10 @@
-var morningTime="07:18";//自己运动能量生成时间
-var startTime="07:00";
-var endTime="8:40";
+var morningTime = "07:18";//自己运动能量生成时间
+var startTime = "07:00";
+var endTime = "8:40";
+var screen_width = 1080;  //设置屏幕的宽度，像素值
+var screen_height = 2340; //设置屏幕的高度，像素值
+
+
 unlock();
 sleep(2000);
 
@@ -24,76 +28,52 @@ function mainEntrence(){
     //前置操作
     prepareThings();
     do{
-		//打开支付宝
-		openAlipay();
-		//蚂蚁庄园
-		if(!checkTime()){
-			//enterAntFarm();
-		 }
-		//进入蚂蚁森林主页,收集自己的能量
-		enterMyMainPage();
-		//进入排行榜
-	if(	enterRank())
-		//进入好友主页，收好友能量
-	{	enterOthers();}
-		//结束后返回主页面
-		whenComplete();
+        //打开支付宝
+        openAlipay();
+        //蚂蚁庄园
+        if(!checkTime()){
+            //enterAntFarm();
+         }
+        //进入蚂蚁森林主页,收集自己的能量
+        enterMyMainPage();
+        //进入排行榜
+        if(enterRank()){
+        //进入好友主页，收好友能量
+         enterOthers();
+         }
+        //结束后返回主页面
+        whenComplete();
     }while(checkTime());
     
-	get_alipay_points();
+    get_alipay_points();
     exit();
 }
 
 //蚂蚁会员积分
 function get_alipay_points(){
-	clickByTextDesc("我的",0);
-	sleep(2000);
-	clickByTextDesc("支付宝会员",0);
-	sleep(8000);
-	clickByTextDesc("领积分",0);
-	sleep(2000);
-	var i=0;
-	for(i=0; i<10;i++){
-		clickByTextDesc("点击领取",0);
-		sleep(100);
-	}
-	back();
-	sleep(1000);
-	back();
-	sleep(1000);
-	clickByTextDesc("首页",0);
+    clickByTextDesc("我的",0);
+    sleep(2000);
+    clickByTextDesc("支付宝会员",0);
+    sleep(8000);
+    clickByTextDesc("领积分",0);
+    sleep(2000);
+    var i=0;
+    for(i=0; i<10;i++){
+        clickByTextDesc("点击领取",0);
+        sleep(100);
+    }
+    back();
+    sleep(1000);
+    back();
+    sleep(1000);
+    clickByTextDesc("首页",0);
 }
 
-//
-function exit_till_error(){
-    clickByTextDesc("关闭",0);
-    sleep(5000);
-    clickByTextDesc("关闭",0);
-    sleep(5000);
-    do{
-		//打开支付宝
-		openAlipay();
-		//蚂蚁庄园
-		if(!checkTime()){
-				enterAntFarm();
-		   }
-		//进入蚂蚁森林主页,收集自己的能量
-		enterMyMainPage();
-		//进入排行榜
-		enterRank();
-		//进入好友主页，收好友能量
-		enterOthers();
-		//结束后返回主页面
-		whenComplete();
-    }while(checkTime());
-    
-    exit();
-}
 
 //解锁
 function unlock(){
     if(!device.isScreenOn()){
-    	//点亮屏幕
+        //点亮屏幕
         device.wakeUp();
         //由于MIUI的解锁有变速检测，因此要点开时间以进入密码界面
         sleep(1000);
@@ -115,26 +95,22 @@ function unlock(){
     }
 }
   
-/**
- * 获取权限和设置参数
- */
+
+//获取权限和设置参数
 function prepareThings(){
-    setScreenMetrics(1080, 2340);
+    setScreenMetrics(screen_width, screen_height);
     //toastLog("test1");
     //请求截图
-   if(!requestScreenCapture()){
+    if(!requestScreenCapture()){
         toastLog("请求截图失败,脚本退出");
         exit();
     }
     sleep(3000);
     //toastLog("test2");
-    
 }
 
 
-/**
- * 获取截图
- */
+//获取截图
 function getCaptureImg(){    
     //captureScreen("/storage/emulated/0/DCIM/Screenshots/1.png");
     //sleep(500);
@@ -149,68 +125,63 @@ function getCaptureImg(){
 }
 
 
-/**
- * 从支付宝主页进入蚂蚁森林我的主页
- */
+//从支付宝主页进入蚂蚁森林我的主页
 function enterMyMainPage(){
     //五次尝试蚂蚁森林入
     var i=0;
-    swipe(520,1200,520,600,500);
+    swipe(screen_width*0.5,screen_height*0.5,screen_width*0.5,screen_height*0.25,500);
     sleep(500);
-    swipe(520,600,520,1200,500);
+    swipe(screen_width*0.5,screen_height*0.25,screen_width*0.5,screen_height*0.5,500);
     while (!textEndsWith("蚂蚁森林").exists() && !descEndsWith("蚂蚁森林").exists() && i<=5){
         sleep(1000);
         i++;   
     }  
     clickByTextDesc("蚂蚁森林",0);
-	
+    
     //等待进入自己的主页,10次尝试
     sleep(3000);
     i=0;
-	while (!textEndsWith("背包").exists() && !descEndsWith("地图").exists() && i<=10){
-		sleep(1000);
-		i++;
-	}
-	toastLog("第"+i+"次尝试进入自己主页");
-	if(i>=10){
-		toastLog("进入自己能量主页失败");
-		return false;
-		//exit_till_error();
-	}
-	
-	//收自己能量
+    while (!textEndsWith("背包").exists() && !descEndsWith("地图").exists() && i<=10){
+        sleep(1000);
+        i++;
+    }
+    toastLog("第"+i+"次尝试进入自己主页");
+    if(i>=10){
+        toastLog("进入自己能量主页失败");
+        return false;
+    }
+    
+    //收自己能量
     clickByTextDesc("克",0);
     toastLog("自己能量收集完成");
     sleep(100);
-	return true;
+    return true;
 }
-/**
- * 进入排行榜
- */
+
+//进入排行榜
 function enterRank(){
     toastLog("进入排行榜");
     sleep(2000);
-    swipe(520,1800,520,300,500);
+    swipe(screen_width*0.5,screen_height*0.8,screen_width*0.5,screen_height*0.1,500);
     sleep(500);
-    swipe(520,1800,520,300,500);
+    swipe(screen_width*0.5,screen_height*0.8,screen_width*0.5,screen_height*0.1,500);
     toastLog("查看更多好友");
     sleep(500);
     clickByTextDesc("查看更多好友",0);
-	   
-	 //等待排行榜主页出现
-   sleep(3000);
-	return true;
+       
+    //等待排行榜主页出现
+    sleep(3000);
+    return true;
 }
-/**
- * 从排行榜获取可收集好友的点击位置
- */
+
+//从排行榜获取可收集好友的点击位置
 function  getHasEnergyfriend(type) {
     var img = getCaptureImg();
     //getCaptureImg();
     //var img = images.read("/storage/emulated/0/DCIM/Screenshots/2.png");
     var p=null;
     if(type==1){
-    	// 区分倒计时和可收取能量的小手
+        // 区分倒计时和可收取能量的小手
         p = images.findMultiColors(img, "#ffffff",[[0, -35, "#1da06d"],[0, 23, "#1da06d"]], {
             region: [1073,200 , 1, 2000]
         });
@@ -224,58 +195,53 @@ function  getHasEnergyfriend(type) {
     }
 }
 
-/**
- * 在排行榜页面,循环查找可收集好友
- * @returns {boolean}
- */
+//在排行榜页面,循环查找可收集好友
 function enterOthers(){
     var i=1;
     var ePoint=getHasEnergyfriend(1);
-	
-    //确保当前操作是在排行榜界面
-	//不断滑动，查找好友
+    
+    //不断滑动，查找好友
     while(ePoint==null){
-		//如果到了收取自己能量的时间，先收取自己能量
+        //如果到了收取自己能量的时间，先收取自己能量
         if(myEnergyTime()){
             return false;
         }
-		swipe(520,1800,520,300,500);
-		sleep(100);
-		ePoint=getHasEnergyfriend(1);
-		i++;
+        swipe(screen_width*0.5,screen_height*0.7,screen_width*0.5,screen_height*0.1,500);
+        sleep(500);
+        ePoint=getHasEnergyfriend(1);
+        i++;
 
 
-		//如果连续32次都未检测到可收集好友,无论如何停止查找(由于程序控制了在排行榜界面,且判断了结束标记,基本已经不存在这种情况了)
-		if(i>32){
-			toastLog("程序可能出错,连续"+i+"次未检测到可收集好友");
-		return false;
-		}
+        //如果连续15次都未检测到可收集好友,无论如何停止查找 
+        if(i>15){
+            toastLog("连续"+i+"次未检测到可收集好友，返回");
+            return false;
+        }
     }
     
-	//找到好友
-	//进入好友页面,10次尝试
-	click(ePoint.x,ePoint.y+20);
-	sleep(3000);
-	var i=0;
-	while (!textEndsWith("浇水").exists() && !descEndsWith("浇水").exists() && i<=10){
-		sleep(1000);
-		i++;
-	}
-	toastLog("第"+i+"次尝试进入好友主页");
-	if(i>=10){
-		toastLog("进入好友能量主页失败");
-		return false;
-		//exit_till_error();
-	}
-	
-	//收能量
-	clickByTextDesc("克",0);
+    //找到好友
+    //进入好友页面,10次尝试
+    click(ePoint.x,ePoint.y+20);
+    sleep(3000);
+    i=0;
+    while (!textEndsWith("浇水").exists() && !descEndsWith("浇水").exists() && i<=10){
+        sleep(1000);
+        i++;
+    }
+    toastLog("第"+i+"次尝试进入好友主页");
+    if(i>=10){
+        toastLog("进入好友能量主页失败");
+        return false;
+    }
+    
+    //收能量
+    clickByTextDesc("克",0);
 
-	//等待返回好友排行榜
-	back();
+    //等待返回好友排行榜
+    back();
 
-	//返回排行榜成功，继续
-	enterOthers();
+    //返回排行榜成功，继续
+    enterOthers();
 
 }
 
@@ -331,9 +297,7 @@ function clickByTextDesc(energyType,paddingY){
     return clicked;
 }
 
-/**
- * 结束后返回主页面
- */
+//结束后返回主页面
 function whenComplete() {
     toastLog("结束");
     back();
@@ -373,19 +337,17 @@ function myEnergyTime(){
 
 function enterAntFarm(){
     var i=0;
-    swipe(520,1200,520,600,500);
-    sleep(500);
-    swipe(520,600,520,1200,500);
+    sleep(2000);
     while (!textEndsWith("蚂蚁庄园").exists() &&!descEndsWith("蚂蚁庄园").exists() && i<=5){
         sleep(1000);
         i++;   
     }
-	if(i>=5){
-		return false;
-	}
-		
+    if(i>=5){
+        return false;
+    }
+        
     clickByTextDesc("蚂蚁庄园",0);
-	sleep(7000);
+    sleep(7000);
     //captureScreen("/storage/emulated/0/DCIM/Screenshots/2_1.png");
     //exit();
     click(931,2150);
@@ -411,15 +373,14 @@ function openAlipay(){
         sleep(2000);
         i++;
     }
-	toastLog("第"+i+"次尝试进入支付宝主页");
+    toastLog("第"+i+"次尝试进入支付宝主页");
     if(i>=5){
         toastLog("没有找到支付宝首页");
         sleep(1000);
-	clickByTextDesc("首页",0);
-		return false;
-        //exit_till_error();
+        clickByTextDesc("首页",0);
+        return false;
     }
-	return true;
+    return true;
 }
     
 
