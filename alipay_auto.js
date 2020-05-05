@@ -1,6 +1,6 @@
 var morningTime = "07:18";//自己运动能量生成时间
 var startTime = "07:00";
-var endTime = "8:40";
+var endTime = "7:35";
 var screen_width = 1080;  //设置屏幕的宽度，像素值
 var screen_height = 2340; //设置屏幕的高度，像素值
 
@@ -207,14 +207,14 @@ function enterOthers(){
             return false;
         }
         swipe(screen_width*0.5,screen_height*0.7,screen_width*0.5,screen_height*0.1,500);
-        sleep(500);
+        sleep(300);
         ePoint=getHasEnergyfriend(1);
         i++;
 
 
         //如果连续15次都未检测到可收集好友,无论如何停止查找 
         if(i>15){
-            toastLog("连续"+i+"次未检测到可收集好友，返回");
+            toastLog("程序可能出错,连续"+i+"次未检测到可收集好友");
             return false;
         }
     }
@@ -224,7 +224,7 @@ function enterOthers(){
     click(ePoint.x,ePoint.y+20);
     sleep(3000);
     i=0;
-    while (!textEndsWith("浇水").exists() && !descEndsWith("浇水").exists() && i<=10){
+    while (!textEndsWith("你收取TA").exists() && !descEndsWith("你收取TA").exists() && i<=10){
         sleep(1000);
         i++;
     }
@@ -235,7 +235,11 @@ function enterOthers(){
     }
     
     //收能量
-    clickByTextDesc("克",0);
+    //clickByTextDesc("克",0);
+    for(var row=screen_height*0.256;row<screen_height*0.376;row+=80)
+        for(var col=screen_width*0.185;col<screen_width*0.815;col+=80){
+            click(col,row);
+            }
 
     //等待返回好友排行榜
     back();
