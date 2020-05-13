@@ -183,7 +183,7 @@ function  getHasEnergyfriend(type) {
     if(type==1){
         // 区分倒计时和可收取能量的小手
         p = images.findMultiColors(img, "#ffffff",[[0, -35, "#1da06d"],[0, 23, "#1da06d"]], {
-            region: [1073,200 , 1, 2000]
+            region: [1045,200 , 1, screen_height-300]
         });
     }
     if(p!=null){
