@@ -136,12 +136,21 @@ function enterMyMainPage(){
         sleep(1000);
         i++;   
     }  
+    if(i>=5){
+        toastLog("没有找到蚂蚁森林入口，尝试中");
+        clickByTextDesc("首页",0);
+        sleep(2000);
+        swipe(screen_width*0.5,screen_height*0.3,screen_width*0.5,screen_height*0.7,1000);
+        sleep(2000);
+        swipe(screen_width*0.5,screen_height*0.3,screen_width*0.5,screen_height*0.7,1000);
+        sleep(2000);
+    }
     clickByTextDesc("蚂蚁森林",0);
     
     //等待进入自己的主页,10次尝试
     sleep(3000);
     i=0;
-    while (!textEndsWith("背包").exists() && !descEndsWith("地图").exists() && i<=10){
+    while (!textEndsWith("背包").exists() && !descEndsWith("背包").exists() && i<=10){
         sleep(1000);
         i++;
     }
@@ -152,7 +161,11 @@ function enterMyMainPage(){
     }
     
     //收自己能量
-    clickByTextDesc("克",0);
+    //clickByTextDesc("克",0);
+    for(var row=screen_height*0.256;row<screen_height*0.376;row+=80)
+        for(var col=screen_width*0.185;col<screen_width*0.815;col+=80){
+            click(col,row);
+            }
     toastLog("自己能量收集完成");
     sleep(100);
     return true;
@@ -183,7 +196,7 @@ function  getHasEnergyfriend(type) {
     if(type==1){
         // 区分倒计时和可收取能量的小手
         p = images.findMultiColors(img, "#ffffff",[[0, -35, "#1da06d"],[0, 23, "#1da06d"]], {
-            region: [1045,200 , 1, screen_height-300]
+            region: [1043,200 , 1, screen_height-300]
         });
     }
     if(p!=null){
@@ -197,6 +210,7 @@ function  getHasEnergyfriend(type) {
 
 //在排行榜页面,循环查找可收集好友
 function enterOthers(){
+    sleep(1000);
     var i=1;
     var ePoint=getHasEnergyfriend(1);
     
@@ -207,7 +221,7 @@ function enterOthers(){
             return false;
         }
         swipe(screen_width*0.5,screen_height*0.7,screen_width*0.5,screen_height*0.1,500);
-        sleep(300);
+        sleep(1000);
         ePoint=getHasEnergyfriend(1);
         i++;
 
