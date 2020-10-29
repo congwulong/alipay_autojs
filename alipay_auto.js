@@ -150,7 +150,7 @@ function enterMyMainPage(){
     //等待进入自己的主页,10次尝试
     sleep(3000);
     i=0;
-    while (!textEndsWith("背包").exists() && !descEndsWith("背包").exists() && i<=10){
+    while (!textEndsWith("种树").exists() && !descEndsWith("种树").exists() && i<=10){
         sleep(1000);
         i++;
     }
